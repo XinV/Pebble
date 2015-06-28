@@ -35,28 +35,26 @@ function showMainMenu() {
 
   var menu = new UI.Menu({
     sections: [{
-      items: [{
-        title: 'Text Color'
-      }, {
+      items: [
+      {
         title: 'Background Color'
-      }, {
-        title: 'Brightness',
       },{
         title: 'Temperature',
+      },{
+        title: 'Noise',
       }]
     }]
   });
 
   menu.on('select', function(e) {
-    var index = e.itemIndex;
+    var index = e.item.title;
 
-    if (index == 0 || index == 1) {
+    if (index == "Background Color") {
       showTextColorMenu();
-    } else if (index == 2) {
-      showBrightnessMenu();
-    } else if (index == 3) {
-//       showTweetMenu();
+    } else if (index == "Temperature") {
       getTemperature();
+    } else if (index == "Noise") {
+      getNoise();
     }
   });
   menu.show();
@@ -160,6 +158,10 @@ function putColor(colorName, callback) {
   );
 }
 
+////////////////////////////////
+//            Temperature
+////////////////////////////////
+
 function getTemperature() {
 
   ajax({url: 'https://pebblecontrolsea.firebaseio.com/feed.json',
@@ -184,6 +186,39 @@ function showTemperature(temperature) {
   var card = new UI.Card({
     title:temperature,
     subtitle:"temperature"
+  });
+
+  card.show();
+}
+
+////////////////////////////////
+//            NOISE
+////////////////////////////////
+
+function getNoise() {
+
+  ajax({url: 'https://pebblecontrolsea.firebaseio.com/feed.json',
+      type: 'json',
+    },
+    function(data, status, request) {
+      var value = data.noise;
+      if(value) {
+        showNoise(value);
+      } else {
+        showMessage("failure");
+      }
+    },
+    function(error, status, request) {
+      showMessage("failure");
+    }
+  );
+}
+
+function showNoise(value) {
+  Vibe.vibrate('long');
+  var card = new UI.Card({
+    title:value,
+    subtitle:"Noise"
   });
 
   card.show();
@@ -219,7 +254,6 @@ function showMessage(title, subtitle) {
       title:title
     });
   }
-
 
   card.show();
 }
@@ -269,23 +303,23 @@ function showMessage(title, subtitle) {
 //   });
 
 //   var req = new XMLHttpRequest();
-// 	req.open('GET', 'http://api.openweathermap.org/data/2.1/find/city?lat=37.830310&lon=-122.270831&cnt=1', true);
-// 	req.onload = function(e) {
-// 	  if (req.readyState == 4 && req.status == 200) {
-// 	    if(req.status == 200) {
-// 			console.log("http is 200");
-// 	      // var response = JSON.parse(req.responseText);
-// 	      // var temperature = response.list[0].main.temp;
-// 	      // var icon = response.list[0].main.icon;
-// 	      // if (!temperature) {
-// 	      // 	temperature = "";
-// 	      // }
-// 	      // // Pebble.sendAppMessage({ 'icon':icon, 'temperature':temperature + '\u00B0C'});
-// 	      // Pebble.sendAppMessage({ 'icon':"icon", 'temperature':"temperature" + '\u00B0C'});
-// 	    } else { console.log('Error'); }
-// 	  }
-// 	}
-// 	req.send(null);
+//  req.open('GET', 'http://api.openweathermap.org/data/2.1/find/city?lat=37.830310&lon=-122.270831&cnt=1', true);
+//  req.onload = function(e) {
+//    if (req.readyState == 4 && req.status == 200) {
+//      if(req.status == 200) {
+//      console.log("http is 200");
+//        // var response = JSON.parse(req.responseText);
+//        // var temperature = response.list[0].main.temp;
+//        // var icon = response.list[0].main.icon;
+//        // if (!temperature) {
+//        //  temperature = "";
+//        // }
+//        // // Pebble.sendAppMessage({ 'icon':icon, 'temperature':temperature + '\u00B0C'});
+//        // Pebble.sendAppMessage({ 'icon':"icon", 'temperature':"temperature" + '\u00B0C'});
+//      } else { console.log('Error'); }
+//    }
+//  }
+//  req.send(null);
 // });
 
 
