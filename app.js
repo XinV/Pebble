@@ -63,17 +63,21 @@ function showMainMenu() {
 }
 
 function showTextColorMenu() {
+
   var menu = new UI.Menu({
     sections: [{
       items: [{
-        title: 'Blue',
+        title: 'blue',
       }, {
-        title: 'Red',
+        title: 'red',
       }, {
-        title: 'White',
+        title: 'green',
+      },{
+        title: 'white',   
       }]
     }]
   });
+  
   menu.on('select', function(e) {
     var str = e.item.title;
     putColor(str, function(){
